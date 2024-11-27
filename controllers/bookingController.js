@@ -3,9 +3,7 @@ const Booking = require("../models/Booking");
 // Create a new booking
 exports.createBooking = async (req, res) => {
   try {
-    // Validate required fields
     const {
-      UserID,
       CourtID,
       ScheduleID,
       BookingDate,
@@ -14,8 +12,11 @@ exports.createBooking = async (req, res) => {
       DayID,
       TotalPrice,
     } = req.body;
+
+    // Ensure the user is authenticated and use the UserID from the token
+    const UserID = req.user.id;
+
     if (
-      !UserID ||
       !CourtID ||
       !ScheduleID ||
       !BookingDate ||
@@ -27,11 +28,20 @@ exports.createBooking = async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Create the booking
-    const booking = await Booking.create(req.body);
+    // Create the booking with UserID from the token
+    const booking = await Booking.create({
+      UserID,
+      CourtID,
+      ScheduleID,
+      BookingDate,
+      BookingStartDate,
+      BookingEndDate,
+      DayID,
+      TotalPrice,
+    });
     res.status(201).json(booking);
   } catch (error) {
-    console.error(error); // Log the error for debugging
+    console.error(error);
     res.status(500).json({ error: error.message });
   }
 };

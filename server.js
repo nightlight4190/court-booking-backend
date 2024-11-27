@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 const sequelize = require("./config/database"); // Import Sequelize instance
+require("dotenv").config();
+
 // Import middlewares
 const authenticate = require("./middleware/auth");
 const logger = require("./middleware/logger"); // Only one import statement
